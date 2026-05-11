@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cortes de cable con 30% descuento</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: #16a34a;
+      --primary-dark: #15803d;
+      --mail: #2563eb;
+      --mail-dark: #1d4ed8;
+      --danger: #dc2626;
+      --shadow: 0 10px 25px rgba(0,0,0,.08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, #111827, #1f2937);
+      color: white;
+      padding: 28px 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 5vw, 40px);
+      line-height: 1.1;
+    }
+
+    header p {
+      margin: 0;
+      color: #d1d5db;
+      font-size: 16px;
+    }
+
+    main {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      padding: 20px 14px 150px;
+    }
+
+    .notice {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      font-weight: 600;
+    }
+
+    .status {
+      margin: 16px 0;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      box-shadow: var(--shadow);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .category {
+      margin: 22px 0;
+    }
+
+    .category h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+      color: #111827;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .item {
+      background: var(--card);
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: .18s ease;
+      position: relative;
+    }
+
+    .item:hover {
+      transform: translateY(-2px);
+      border-color: #bbf7d0;
+    }
+
+    .item.selected {
+      border-color: var(--primary);
+      background: #f0fdf4;
+    }
+
+    .item-top {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 2px solid #cbd5e1;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      margin-top: 2px;
+      font-size: 14px;
+      color: white;
+      background: white;
+    }
+
+    .item.selected .check {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .name {
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .meters {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .meters strong {
+      color: var(--text);
+      font-size: 20px;
+    }
+
+    .bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -10px 25px rgba(0,0,0,.08);
+      padding: 12px 14px;
+      z-index: 10;
+    }
+
+    .bar-inner {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .summary {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .summary strong {
+      display: block;
+      color: var(--text);
+      font-size: 18px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-weight: 800;
+      font-size: 15px;
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .btn.whatsapp {
+      background: var(--primary);
+    }
+
+    .btn.whatsapp:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn.email {
+      background: var(--mail);
+    }
+
+    .btn.email:hover {
+      background: var(--mail-dark);
+    }
+
+    .btn.disabled {
+      background: #9ca3af;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .empty {
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding-bottom: 210px;
+      }
+
+      .bar-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cortes de cable con 30% descuento</h1>
+    <p>Seleccioná los rollos que te interesan y consultá por WhatsApp o email.</p>
+  </header>
+
+  <main>
+    <div class="notice">
+      30% de descuento sobre precio de lista. Para clientes en cartera se aplican condiciones comerciales previas.
+    </div>
+
+    <div id="status" class="status">Cargando stock disponible...</div>
+    <div id="content"></div>
+  </main>
+
+  <div class="bar">
+    <div class="bar-inner">
+      <div class="summary">
+        <strong id="selectedCount">0 seleccionados</strong>
+        <span id="selectedMeters">Total: 0 metros</span>
+      </div>
+
+      <a id="whatsappBtn" class="btn whatsapp disabled" href="#" target="_blank" rel="noopener">
+        WhatsApp
+      </a>
+
+      <a id="emailBtn" class="btn email disabled" href="#">
+        Email
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSncIrbzZdXDJtO1-TnsehiJidLhdgqeG96goFisxij12y05CAsSBHj5Ar6BcXht2iv4ZgwKts7Cg4u/pub?gid=1470391188&single=true&output=csv";
+    const WHATSAPP_NUMBER = "5491126695277";
+    const EMAIL_TO = "m_m_colombo@hotmail.com";
+    const BASE_MESSAGE = "Hola, estoy viendo la pagina que ofrece los cortes de cable con 30% descuento";
+    const CACHE_KEY = "cables_csv_cache_v2";
+    const CACHE_TIME = 5 * 60 * 1000;
+
+    const state = {
+      items: [],
+      selected: new Set()
+    };
+
+    const statusEl = document.getElementById("status");
+    const contentEl = document.getElementById("content");
+    const selectedCountEl = document.getElementById("selectedCount");
+    const selectedMetersEl = document.getElementById("selectedMeters");
+    const whatsappBtn = document.getElementById("whatsappBtn");
+    const emailBtn = document.getElementById("emailBtn");
+
+    init();
+
+    async function init() {
+      try {
+        const csv = await getCsvWithCache();
+        const rows = parseCsv(csv);
+        const items = normalizeRows(rows)
+          .filter(item => item.activo === "si");
+
+        state.items = items;
+
+        if (!items.length) {
+          statusEl.textContent = "No hay cortes activos disponibles en este momento.";
+          contentEl.innerHTML = '<div class="empty">No se encontraron cables activos.</div>';
+          updateSummary();
+          return;
+        }
+
+        statusEl.textContent = "Stock actualizado. Tocá los cortes que quieras consultar.";
+        render(items);
+        updateSummary();
+      } catch (error) {
+        console.error(error);
+        statusEl.className = "status error";
+        statusEl.textContent = "No se pudo cargar el stock. Revisá la conexión o la publicación del Google Sheets.";
+      }
+    }
+
+    async function getCsvWithCache() {
+      const now = Date.now();
+
+      try {
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+
+        if (cached && cached.timestamp && cached.csv && now - cached.timestamp < CACHE_TIME) {
+          return cached.csv;
+        }
+      } catch (_) {}
+
+      const response = await fetch(CSV_URL, { cache: "no-store" });
+
+      if (!response.ok) {
+        throw new Error("Error HTTP " + response.status);
+      }
+
+      const csv = await response.text();
+
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          timestamp: now,
+          csv
+        }));
+      } catch (_) {}
+
+      return csv;
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            field += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+          continue;
+        }
+
+        if (char === "," && !inQuotes) {
+          row.push(field);
+          field = "";
+          continue;
+        }
+
+        if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && next === "\n") i++;
+
+          row.push(field);
+
+          if (row.some(cell => cell.trim() !== "")) {
+            rows.push(row);
+          }
+
+          row = [];
+          field = "";
+          continue;
+        }
+
+        field += char;
+      }
+
+      row.push(field);
+
+      if (row.some(cell => cell.trim() !== "")) {
+        rows.push(row);
+      }
+
+      if (!rows.length) return [];
+
+      const headers = rows[0].map(h => cleanHeader(h));
+
+      return rows.slice(1).map(cols => {
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = (cols[index] || "").trim();
+        });
+        return obj;
+      });
+    }
+
+    function cleanHeader(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "");
+    }
+
+    function normalizeRows(rows) {
+      return rows.map((row, index) => {
+        const categoria = String(row.categoria || "").trim();
+        const nombre = String(row.nombre || "").trim();
+        const metrosRaw = String(row.metros || "").trim();
+        const activo = String(row.activo || "").trim().toLowerCase();
+
+        return {
+          id: String(index),
+          categoria: categoria || "Sin categoría",
+          nombre: nombre || "Sin nombre",
+          metrosRaw,
+          metros: parseMeters(metrosRaw),
+          activo
+        };
+      });
+    }
+
+    function parseMeters(value) {
+      const normalized = String(value || "")
+        .replace(/\./g, "")
+        .replace(",", ".")
+        .replace(/[^\d.]/g, "");
+
+      const number = Number(normalized);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function formatMeters(value) {
+      return new Intl.NumberFormat("es-AR", {
+        maximumFractionDigits: 2
+      }).format(value);
+    }
+
+    function render(items) {
+      const groups = groupByCategory(items);
+
+      contentEl.innerHTML = Object.entries(groups).map(([category, groupItems]) => {
+        return `
+          <section class="category">
+            <h2>${escapeHtml(category)}</h2>
+            <div class="grid">
+              ${groupItems.map(item => renderItem(item)).join("")}
+            </div>
+          </section>
+        `;
+      }).join("");
+
+      contentEl.querySelectorAll(".item").forEach(card => {
+        card.addEventListener("click", () => {
+          const id = card.dataset.id;
+          toggleItem(id);
+        });
+      });
+    }
+
+    function renderItem(item) {
+      const selected = state.selected.has(item.id);
+
+      return `
+        <article class="item ${selected ? "selected" : ""}" data-id="${escapeHtml(item.id)}">
+          <div class="item-top">
+            <div class="check">${selected ? "&#10003;" : ""}</div>
+            <div>
+              <div class="name">${escapeHtml(item.nombre)}</div>
+              <div class="small">${escapeHtml(item.categoria)}</div>
+            </div>
+          </div>
+          <div class="meters">
+            <strong>${escapeHtml(item.metrosRaw || formatMeters(item.metros))}</strong> metros
+          </div>
+        </article>
+      `;
+    }
+
+    function groupByCategory(items) {
+      return items.reduce((acc, item) => {
+        if (!acc[item.categoria]) acc[item.categoria] = [];
+        acc[item.categoria].push(item);
+        return acc;
+      }, {});
+    }
+
+    function toggleItem(id) {
+      if (state.selected.has(id)) {
+        state.selected.delete(id);
+      } else {
+        state.selected.add(id);
+      }
+
+      render(state.items);
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const selectedItems = state.items.filter(item => state.selected.has(item.id));
+      const totalMeters = selectedItems.reduce((sum, item) => sum + item.metros, 0);
+
+      selectedCountEl.textContent = selectedItems.length === 1
+        ? "1 seleccionado"
+        : selectedItems.length + " seleccionados";
+
+      selectedMetersEl.textContent = "Total: " + formatMeters(totalMeters) + " metros";
+
+      if (!selectedItems.length) {
+        whatsappBtn.classList.add("disabled");
+        emailBtn.classList.add("disabled");
+        whatsappBtn.href = "#";
+        emailBtn.href = "#";
+        return;
+      }
+
+      whatsappBtn.classList.remove("disabled");
+      emailBtn.classList.remove("disabled");
+
+      whatsappBtn.href = buildWhatsappUrl(selectedItems, totalMeters);
+      emailBtn.href = buildEmailUrl(selectedItems, totalMeters);
+    }
+
+    function buildMessage(items, totalMeters) {
+      const lines = [
+        BASE_MESSAGE,
+        "",
+        "Quiero consultar por estos cortes:",
+        ""
+      ];
+
+      items.forEach(item => {
+        lines.push("- " + item.categoria + " | " + item.nombre + " | " + (item.metrosRaw || formatMeters(item.metros)) + " metros");
+      });
+
+      lines.push("");
+      lines.push("Total aproximado: " + formatMeters(totalMeters) + " metros");
+      lines.push("");
+      lines.push("30% de descuento sobre precio de lista. Para clientes en cartera se aplican condiciones comerciales previas.");
+
+      return lines.join("\n");
+    }
+
+    function buildWhatsappUrl(items, totalMeters) {
+      const text = encodeURIComponent(buildMessage(items, totalMeters));
+      return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + text;
+    }
+
+    function buildEmailUrl(items, totalMeters) {
+      const subject = encodeURIComponent("Consulta por cortes de cable con 30% descuento");
+      const body = encodeURIComponent(buildMessage(items, totalMeters));
+      return "mailto:" + EMAIL_TO + "?subject=" + subject + "&body=" + body;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
+</body>
+</html>
